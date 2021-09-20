@@ -1,0 +1,8 @@
+<select name="{{name}}" class="form-control{{#multiple}} selectpicker{{/multiple}}"{{#readonly}} disabled{{/readonly}}{{#multiple}} multiple{{/multiple}} title="Please choose...">
+    {{^multiple}}
+        <option{{#unselected}} selected{{/unselected}}></option>
+    {{/multiple}}
+    {{#options}}
+        <option{{#selected}} selected{{/selected}}>{{name}}</option>
+    {{/options}}
+</select>

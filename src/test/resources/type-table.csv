@@ -1,0 +1,10 @@
+Id,Checkbox,Number,Numbers,String,Strings,TestEnum,Enums,Embedded,Embeddeds,Relation,Relations,ParentInt,ParentString,
+0,true,1,[ 1 ],Entity 1,"[ ""e1"" ]",ONE,"[ ""TWO"" ]",10,"[ { ""embeddedInt"": 11, ""embeddedString"": ""Embedded 11"" } ]","{ ""relationInt"": 0, ""relationString"": null }",,0,,"Update
+Clone
+Delete"
+1,false,2,[ 2 ],Entity 2,"[ ""e2"" ]",TWO,"[ ""ONE"" ]",20,"[ { ""embeddedInt"": 22, ""embeddedString"": ""Embedded 22"" } ]","{ ""relationInt"": 0, ""relationString"": null }",,0,,"Update
+Clone
+Delete"
+2,true,3,"[ 30, 33 ]",Entity 3,"[ ""e3"", ""e30"" ]",TWO,"[ ""ONE"", ""TWO"" ]",300,"[ { ""embeddedInt"": 33, ""embeddedString"": ""Embedded 33"" } ]","{ ""relationInt"": 901, ""relationString"": ""X-901"" }","[ { ""relationInt"": 901, ""relationString"": ""X-901"" }, { ""relationInt"": 902, ""relationString"": ""X-902"" } ]",333,Thirty,"Update
+Clone
+Delete"

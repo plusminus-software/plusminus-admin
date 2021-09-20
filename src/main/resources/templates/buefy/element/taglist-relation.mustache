@@ -1,0 +1,27 @@
+<div class="card">
+<div class="card-content">
+{{#taglist}}
+{{>buefy/element/taglist}}
+{{/taglist}}
+<taglist-relation v-bind:object="parent.object" field-name="{{name}}">
+  <template v-slot:default="slotProps">
+{{#table}}
+<type-table url="{{url}}">
+<template slot-scope="props">
+    {{#columns}}
+{{>buefy/table-column}}
+    {{/columns}}
+    <b-table-column>
+        <div class="field is-grouped">
+            <p class="control">
+                <b-button icon-left="plus" size="is-small" type="is-primary" outlined @click="slotProps.add(props.props.row)">Add</b-button>
+            </p>
+        </div>
+    </b-table-column>
+</template>
+</type-table>
+{{/table}}
+  </template>
+</taglist-relation>
+</div>
+</div>

@@ -1,0 +1,41 @@
+<b-upload v-model="parent.files"
+    multiple
+    drag-drop>
+    <section class="section">
+        <div class="content has-text-centered">
+            <p>
+                <b-icon
+                    icon="upload"
+                    size="is-large">
+                </b-icon>
+            </p>
+            <p>Drop your files here or click to upload</p>
+        </div>
+    </section>
+</b-upload>
+
+<div class="tags">
+    <span v-for="(file, index) in parent.files"
+        :key="index"
+        class="tag is-primary">
+        {{OPEN}}file.name{{CLOSE}}
+        <button class="delete is-small"
+            type="button"
+            @click="parent.files.splice(index, 1)">
+        </button>
+    </span>
+</div>
+<div class="content has-text-centered">
+    <b-button size="is-small" v-if="parent.files && parent.files.length"
+        @click="parent.uploadFiles(parent.files, '{{url}}'.replace('%s', parent.object.id ? parent.object.id : '')).then(response => { parent.files.length = 0; parent.replaceField(JSON.parse(response), '{{name}}') })">
+            Upload
+    </b-button>
+</div>
+<div>
+    <div class="content has-text-centered">
+        <p>or</p>
+        <b-button @click="parent.uploadFromClipboard('{{url}}'.replace('%s', parent.object.id)).then(response => { parent.files.length = 0; parent.object.{{name}} = JSON.parse(response).{{name}} })">
+            Add from clipboard
+        </b-button>
+    </div>
+</div>

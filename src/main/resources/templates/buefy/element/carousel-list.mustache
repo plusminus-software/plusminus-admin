@@ -1,0 +1,46 @@
+{{#upload}}
+    <div class="card has-text-centered">
+    {{>buefy/element/upload}}
+    </div>
+    </b-field>
+    <b-field>
+{{/upload}}
+
+<b-carousel-list :data="{{#single}}[{{/single}}parent.object.{{name}}{{#single}}]{{/single}}" :items-to-show="3">
+    <template slot="item" slot-scope="props">
+        <div class="card">
+            <div class="card-image">
+                <figure class="image is-fullwidth">
+                    <img :src="props.list">
+                    <b-tag
+                        attached
+                        rounded
+                        aria-close-label="Close tag"
+                        @close="parent.object.{{name}}.splice(props.index, 1)"
+                        closable
+                        style="position: absolute; top: 0;">
+                        #{{OPEN}} props.index + 1 {{CLOSE}}
+                    </b-tag>
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="content">
+                    <p class="subtitle is-7">{{ OPEN }} props.list {{ CLOSE }}
+                        <b-button icon-left="content-copy" size="is-small" type="is-text" @click="parent.copyToClipboard(props.list)">
+                        </b-button>
+                    </p>
+                    <b-button size="is-small"
+                              icon-left="chevron-left"
+                              v-if="props.index != 0"
+                              @click="parent.arraymove(parent.object.{{name}}, props.index, props.index - 1)">
+                    </b-button>
+                    <b-button size="is-small"
+                              icon-left="chevron-right"
+                              v-if="props.index != parent.object.{{name}}.length - 1"
+                              @click="parent.arraymove(parent.object.{{name}}, props.index, props.index + 1)">
+                    </b-button>
+                </div>
+            </div>
+        </div>
+    </template>
+</b-carousel-list>

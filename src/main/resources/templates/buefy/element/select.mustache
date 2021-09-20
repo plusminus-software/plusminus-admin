@@ -1,0 +1,7 @@
+<b-select expanded
+{{#name}}    v-model="parent.object.{{.}}"{{/name}}
+{{#multiple}}    multiple{{/multiple}}>
+    {{#options}}
+    <option value="{{value}}">{{text}}</option>
+    {{/options}}
+</b-select>

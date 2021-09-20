@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/buefy@0.8.20/dist/buefy.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/2.5.94/css/materialdesignicons.min.css">
+    <!--link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"-->
+</head>
+
+<body>
+    <div id="app" class="container">
+    {{#panel}}
+    {{#tabs}}
+        {{>buefy/tabs}}
+    {{/tabs}}
+    {{/panel}}
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10"></script>
+    <!-- Full bundle -->
+    <script src="https://unpkg.com/buefy@0.8.20/dist/buefy.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="/buefy/modal.js"></script>
+    <script src="/buefy/embedded.js"></script>
+    <script src="/buefy/taglist-embedded.js"></script>
+    <script src="/buefy/taglist-relation.js"></script>
+    <script src="/buefy/relation.js"></script>
+    <script src="/buefy/table.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsog@1.0.7/lib/JSOG.js"></script>
+
+    <script>
+        var typeTable = createTableComponent('type-table');
+        var typeModal = createModalComponent('type-modal');
+        var embedded = createEmbeddedComponent('embedded');
+        var relation = createRelationComponent('relation');
+        var taglistEmbedded = createTaglistEmbeddedComponent('taglist-embedded');
+        var taglistRelation = createTaglistRelationComponent('taglist-relation');
+        new Vue({
+            el: '#app',
+            components: {
+                typeTable: typeTable,
+                typeModal: typeModal,
+                embedded: embedded,
+                relation: relation,
+                taglistEmbedded: taglistEmbedded,
+                taglistRelation: taglistRelation
+            }
+        });
+    </script>
+
+    <style>
+    .scrollable { overflow: auto !important; }
+    </style>
+</body>
+</html>

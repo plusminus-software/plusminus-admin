@@ -1,0 +1,48 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+<div class="form-group row">
+    <label class="col-sm-2 col-form-label">Test</label>
+    <div class="col-sm-10">
+        <select multiple data-role="tagsinput" object tags="true" name="name"{{#readonly}} readonly{{/readonly}}{{#dynamic}} dynamic{{/dynamic}} class="form-control">
+        </select>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
+
+<style>
+    .bootstrap-tagsinput {
+        width: 100%
+    }
+    .bootstrap-tagsinput .tag {
+        background: #ededed;
+        border: 1px solid #d9d9d9;
+        padding: 0 6px;
+        margin-right: 2px;
+        color: #555;
+        border-radius: 4px;
+    }
+</style>
+
+<script>
+    $('[data-role="tagsinput"][object]').tagsinput({
+        itemValue: function(item) {
+            return item;
+        },
+        itemText: function(item) {
+            if (item.id) {
+                return item.id;
+            }
+            let keys = Object.keys(item);
+            if (keys.length === 0) {
+                return '{}';
+            }
+            return keys[0] + ':' + item[keys[0]] + '...';
+        }
+    });
+</script>

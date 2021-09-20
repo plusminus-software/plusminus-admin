@@ -1,0 +1,8 @@
+<b-collapse :open="false" position="is-bottom">
+    <a slot="trigger" slot-scope="props">
+        <b-icon :icon="!props.open ? 'menu-down' : 'menu-up'"></b-icon>
+    </a>
+{{#elements}}
+{{>buefy/element}}
+{{/elements}}
+</b-collapse>

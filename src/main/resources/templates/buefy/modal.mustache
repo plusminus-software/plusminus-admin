@@ -1,0 +1,9 @@
+<type-modal title="{{title}}" action="{{action}}" color={{color}} type-name="{{parameters.name}}" ref="{{parameters.name}}{{action}}Modal" url="{{url}}">
+<template v-slot:default="parent">
+{{#form}}
+{{#elements}}
+{{>buefy/element}}
+{{/elements}}
+{{/form}}
+</template>
+</type-modal>

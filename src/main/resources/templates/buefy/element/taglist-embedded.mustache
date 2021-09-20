@@ -1,0 +1,16 @@
+<div class="card">
+<div class="card-content">
+{{#taglist}}
+{{>buefy/element/taglist}}
+{{/taglist}}
+<taglist-embedded v-bind:object="parent.object" field-name="{{name}}">
+  <template v-slot:default="parent">
+{{#accordion}}
+{{#elements}}
+{{>buefy/element}}
+{{/elements}}
+{{/accordion}}
+  </template>
+</taglist-embedded>
+</div>
+</div>

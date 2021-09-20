@@ -1,0 +1,13 @@
+<table class="table table-striped table-bordered" id="table-{{parsedClass.name}}" {{#insideModal}}inside-modal{{/insideModal}}
+    type-name="{{parsedClass.name}}" url="{{url}}">
+  <thead class="thead-light">
+    <tr>
+    {{#parsedClass.allFields}}
+      <th scope="col">{{name}}</th>
+    {{/parsedClass.allFields}}
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>

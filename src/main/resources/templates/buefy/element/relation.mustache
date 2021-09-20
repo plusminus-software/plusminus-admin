@@ -1,0 +1,40 @@
+<div class="card">
+<div class="card-content">
+
+<b-field grouped group-multiline>
+    <div class="control">
+        <b-tag attached v-if="parent.object.{{name}}"
+            aria-close-label="Close tag"
+            @close="parent.object.{{name}} = null"
+            closable>
+            {{OPEN}} parent.simplifyObject(parent.object.{{name}}) {{CLOSE}}
+        </b-tag>
+        <div v-if="!parent.object.{{name}}">
+            No relation
+        </div>
+    </div>
+</b-field>
+
+
+<relation v-bind:object="parent.object" field-name="{{name}}">
+  <template v-slot:default="slotProps">
+{{#table}}
+<type-table url="{{url}}">
+<template slot-scope="props">
+    {{#columns}}
+{{>buefy/table-column}}
+    {{/columns}}
+    <b-table-column>
+        <div class="field is-grouped">
+            <p class="control">
+                <b-button icon-left="check" size="is-small" type="is-primary" outlined @click="slotProps.choose(props.props.row)">Choose</b-button>
+            </p>
+        </div>
+    </b-table-column>
+</template>
+</type-table>
+{{/table}}
+  </template>
+</relation>
+</div>
+</div>

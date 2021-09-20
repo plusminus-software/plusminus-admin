@@ -1,0 +1,34 @@
+<b-field grouped position="is-right">
+    <p class="control">
+        <b-button icon-left="plus" size="is-small" type="is-success" outlined @click="$refs.{{parameters.name}}Table.create()">Add</b-button>
+    </p>
+    <p class="control">
+        <b-button icon-left="refresh" size="is-small" @click="$refs.{{parameters.name}}Table.refresh()">Refresh</b-button>
+    </p>
+</b-field>
+<type-table url="{{url}}" type-name="{{parameters.name}}" ref="{{parameters.name}}Table">
+<template slot-scope="props">
+    {{#columns}}
+{{>buefy/table-column}}
+    {{/columns}}
+    <b-table-column>
+        <div class="field">
+            {{#updateModal}}
+            <p class="control">
+                <b-button class="is-fullwidth" icon-left="pencil" size="is-small" type="is-info" outlined @click="$refs.{{parameters.name}}Table.edit(props.props.row)">Update</b-button>
+            </p>
+            {{/updateModal}}
+            {{#cloneModal}}
+            <p class="control">
+                <b-button class="is-fullwidth" icon-left="content-copy" size="is-small" type="is-warning" outlined @click="$refs.{{parameters.name}}Table.clone(props.props.row)">Clone</b-button>
+            </p>
+            {{/cloneModal}}
+            {{#deleteModal}}
+            <p class="control">
+                <b-button class="is-fullwidth" icon-left="delete" size="is-small" type="is-danger" outlined @click="$refs.{{parameters.name}}Table.delete(props.props.row)">Delete</b-button>
+            </p>
+            {{/deleteModal}}
+        </div>
+    </b-table-column>
+</template>
+</type-table>

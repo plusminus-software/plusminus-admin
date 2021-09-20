@@ -1,0 +1,5 @@
+<b-table-column field="{{name}}" label="{{title}}" {{type}}{{#sortable}} sortable{{/sortable}}{{#centered}} centered{{/centered}}{{#width}} width="{{.}}"{{/width}}>
+{{#tag}}<span class="tag" :class="tagType(props.row.{{name}})">{{/tag}}
+    {{OPEN}}props.props.row.{{name}} !== null && props.props.row.{{name}} !== undefined ? props.props.row.{{name}}{{#titleField}}.{{.}}{{/titleField}} : '' {{#filter}}|{{.}}{{/filter}}{{CLOSE}}
+{{#tag}}</span>{{/tag}}
+</b-table-column>

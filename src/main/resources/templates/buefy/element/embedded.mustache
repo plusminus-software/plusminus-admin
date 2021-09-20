@@ -1,0 +1,11 @@
+<div class="card">
+  <div class="card-content">
+    <embedded v-bind:object="parent.object" field-name="{{name}}">
+      <template v-slot:default="parent">
+{{#elements}}
+{{>buefy/element}}
+{{/elements}}
+      </template>
+    </embedded>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<b-field grouped group-multiline>
+    <div class="control" v-for="(item, index) in parent.object.{{name}}">
+        <b-tag
+            attached
+            {{#closable}}aria-close-label="Close tag"
+            @close="parent.object.{{name}}.splice(index, 1)"
+            closable{{/closable}}>
+            {{OPEN}} item {{CLOSE}}
+        </b-tag>
+    </div>
+    <div class="control" v-if="!parent.object.{{name}} || parent.object.{{name}}.length === 0">
+        No elements
+    </div>
+</b-field>

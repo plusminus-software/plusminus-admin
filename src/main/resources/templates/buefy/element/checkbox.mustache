@@ -1,0 +1,14 @@
+<b-field>
+    {{#options}}
+    <b-checkbox
+        {{#name}}
+        v-model="parent.object.{{.}}"
+        @click.native="if (!parent.object.{{.}}) parent.object.{{.}} = []"
+        {{/name}}
+        native-value="{{value}}"
+        {{#color}}type="is-{{.}}"{{/color}}>
+        {{#icon}}<b-icon icon="{{icon}}"></b-icon>{{/icon}}
+        <span>{{text}}</span>
+    </b-checkbox>
+    {{/options}}
+</b-field>

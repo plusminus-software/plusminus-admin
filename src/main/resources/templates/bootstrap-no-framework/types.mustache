@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+      {{#types}}
+      <a class="nav-link" data-toggle="pill" href="#content-{{parsedClass.name}}" role="tab">{{parsedClass.name}}</a>
+      {{/types}}
+    </div>
+    </div>
+    <div class="col-9">
+    <div class="tab-content">
+      {{#types}}
+      <div class="tab-pane fade" id="content-{{parsedClass.name}}" role="tabpanel">
+        {{>table-container}}
+      </div>
+      {{/types}}
+    </div>
+    </div>
+  </div>
+    {{#types}}
+        {{#modals}}
+            {{>modal}}
+        {{/modals}}
+    {{/types}}
+</div>
+
+{{>dependencies}}

@@ -1,0 +1,27 @@
+<b-dropdown
+    expanded
+    v-model="parent.object.{{name}}"
+    aria-role="list"
+    {{#multiple}}multiple{{/multiple}}>
+    <button class="button is-fullwidth" type="button" slot="trigger">
+        <template v-if="parent.object.{{name}}">
+            <!-- TODO b-icon icon="earth"></b-icon-->
+            <span>{{OPEN}} parent.object.{{name}} {{CLOSE}}</span>
+        </template>
+        <template v-else>
+            <span><i><small>Please select elements</small></i></span>
+        </template>
+        <b-icon icon="menu-down"></b-icon>
+    </button>
+    {{#options}}
+    <b-dropdown-item value="{{value}}" aria-role="listitem">
+        <div class="media">
+            <!--TODO b-icon class="media-left" icon="earth"></b-icon-->
+            <div class="media-content">
+                <h3>{{text}}</h3>
+                <!--TODO small>Everyone can see</small-->
+            </div>
+        </div>
+    </b-dropdown-item>
+    {{/options}}
+</b-dropdown>

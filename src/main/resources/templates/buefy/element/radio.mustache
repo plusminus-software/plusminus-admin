@@ -1,0 +1,11 @@
+<b-field>
+    {{#options}}
+    <b-radio-button
+        {{#name}}v-model="parent.object.{{.}}"{{/name}}
+        native-value="{{value}}"
+        {{#color}}type="is-{{.}}"{{/color}}>
+        {{#icon}}<b-icon icon="{{icon}}"></b-icon>{{/icon}}
+        <span>{{text}}</span>
+    </b-radio-button>
+    {{/options}}
+</b-field>
