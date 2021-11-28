@@ -1,6 +1,7 @@
 package software.plusminus.admin.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import software.plusminus.admin.converter.AdminPanelConverter;
 
 @Controller
 @RequestMapping("${admin.uri:/admin}")
+@ConditionalOnProperty("admin.controller") //TODO add security
 public class AdminController {
 
     @Autowired

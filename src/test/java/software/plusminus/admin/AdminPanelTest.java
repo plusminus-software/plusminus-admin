@@ -50,13 +50,13 @@ public class AdminPanelTest extends SeleniumTest {
     private TestController testController;
 
     @Override
-    protected String getUrlOrPath() {
+    protected String url() {
         return "/admin";
     }
 
     @Override
-    protected WebTestOptions getOptions() {
-        return super.getOptions()
+    protected WebTestOptions options() {
+        return super.options()
                 .beforePageLoads(() -> testController.refreshData())
                 .reloadPageOnEachTest(true)
                 .logsFilter(logEntry -> !logEntry.getMessage().contains("favicon"));
