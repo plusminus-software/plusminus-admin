@@ -1,6 +1,6 @@
 package software.plusminus.admin.converter;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -22,14 +22,12 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Component
 public class AdminPanelConverter {
 
-    @Autowired
     private TableConverter tableConverter;
-    @Autowired
     private ModalConverter modalConverter;
-    @Autowired
     private Map<String, AdminTypeConfig> typeConfigs;
 
     public AdminPanel toAdminPanel() {
@@ -74,7 +72,8 @@ public class AdminPanelConverter {
         }
 
         Map<String, Field> fieldMap = type.getAllFields().stream()
-                .collect(Collectors.toMap(Field::getName, Function.identity()));
+                .collect(Collectors.toMap(Field::getName, Function.identity(),
+                        (existing, shadowed) -> existing));
 
         return fields.stream()
                 .map(fieldMap::get)

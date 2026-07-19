@@ -1,6 +1,6 @@
 package software.plusminus.admin.converter.html;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.plusminus.admin.converter.html.field.ElementConverter;
 import software.plusminus.admin.model.DataAction;
@@ -13,17 +13,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Component
 public class FieldConverter {
 
     private static final List<DataAction> LABEL_ACTIONS = Arrays.asList(DataAction.READ, DataAction.DELETE);
-    private static final List<String> ANNOTATIONS_TO_IGNORE = Arrays.asList("Ignore", "ReadOnly", "Readonly");
+    private static final List<String> ANNOTATIONS_TO_IGNORE =
+            Arrays.asList("JsonIgnore", "Ignore", "ReadOnly", "Readonly");
     private static final String ANNOTATION_TO_OVERRIDE_IGNORING = "NotIgnoredForAdmin";
 
-    @Autowired
     private FieldNameService fieldNameService;
-
-    @Autowired
     private List<ElementConverter<? extends software.plusminus.type.model.Field, ? extends Element>> elementConverters;
 
     public Optional<Field> toField(software.plusminus.type.model.Field field, DataAction action) {
@@ -59,8 +58,7 @@ public class FieldConverter {
             return false;
         }
         return field.getAnnotations().stream()
-                .anyMatch(a -> ANNOTATIONS_TO_IGNORE.stream()
-                        .anyMatch(i -> i.contains(a.getName())));
+                .anyMatch(a -> ANNOTATIONS_TO_IGNORE.contains(a.getName()));
     }
 
     private <F extends software.plusminus.type.model.Field, T extends Element> T convert(

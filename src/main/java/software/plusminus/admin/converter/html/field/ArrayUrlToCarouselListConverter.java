@@ -1,5 +1,6 @@
 package software.plusminus.admin.converter.html.field;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import software.plusminus.admin.model.html.CarouselList;
@@ -10,6 +11,9 @@ import software.plusminus.type.model.field.UrlField;
 @Order(1)
 @Component
 public class ArrayUrlToCarouselListConverter implements ArrayElementConverter<UrlField, CarouselList> {
+
+    @Value("${api.prefix:/api}")
+    private String apiPrefix;
 
     @Override
     public Class<UrlField> arrayType() {
@@ -30,7 +34,7 @@ public class ArrayUrlToCarouselListConverter implements ArrayElementConverter<Ur
         carouselList.setName(arrayField.getName());
         Upload upload = new Upload();
         upload.setDragAndDrop(true);
-        upload.setUrl("/api/products/%s/photos");
+        upload.setUrl(apiPrefix + "/%s/" + arrayField.getName());
         carouselList.setUpload(upload);
         return carouselList;
     }
