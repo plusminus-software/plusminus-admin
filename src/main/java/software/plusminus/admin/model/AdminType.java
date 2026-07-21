@@ -1,12 +1,14 @@
 package software.plusminus.admin.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import software.plusminus.admin.model.html.Element;
 import software.plusminus.admin.model.html.Modal;
 import software.plusminus.admin.model.html.Table;
 import software.plusminus.type.model.Type;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AdminType extends Element {
 
     private static final boolean ADMIN_TYPE = true;

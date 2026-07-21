@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.plusminus.admin.converter.html.field.ElementConverter;
 import software.plusminus.admin.model.DataAction;
+import software.plusminus.admin.model.html.AbstractInput;
 import software.plusminus.admin.model.html.Element;
 import software.plusminus.admin.model.html.Field;
 import software.plusminus.admin.model.html.Span;
 import software.plusminus.admin.service.html.FieldNameService;
+import software.plusminus.admin.service.html.InputService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +25,7 @@ public class FieldConverter {
     private static final String ANNOTATION_TO_OVERRIDE_IGNORING = "NotIgnoredForAdmin";
 
     private FieldNameService fieldNameService;
+    private InputService inputService;
     private List<ElementConverter<? extends software.plusminus.type.model.Field, ? extends Element>> elementConverters;
 
     public Optional<Field> toField(software.plusminus.type.model.Field field, DataAction action) {
@@ -40,15 +43,25 @@ public class FieldConverter {
             return Optional.empty();
         }
         if (LABEL_ACTIONS.contains(action)) {
-            Span span = new Span();
-            span.setName(field.getName());
-            return Optional.of(span);
+            return Optional.of(toSpan(field));
         }
-        return elementConverters.stream()
+        /* A field with no matching converter falls back to a display-only span */
+        Element element = elementConverters.stream()
                 .filter(c -> c.fieldType() == field.getClass())
                 .filter(c -> supports(field, c))
                 .findFirst()
-                .map(c -> convert(field, c));
+                .<Element>map(c -> convert(field, c))
+                .orElseGet(() -> toSpan(field));
+        if (element instanceof AbstractInput) {
+            ((AbstractInput) element).setReadonly(inputService.isReadonly(field, action));
+        }
+        return Optional.of(element);
+    }
+
+    private Span toSpan(software.plusminus.type.model.Field field) {
+        Span span = new Span();
+        span.setName(field.getName());
+        return span;
     }
 
     private boolean isIgnored(software.plusminus.type.model.Field field) {

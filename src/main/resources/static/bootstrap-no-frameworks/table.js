@@ -69,7 +69,7 @@ function getRow(table, typeName, columns, object) {
         if (cellValue == null) {
             cellValue = "";
         }
-        rowElement.append($('<td/>').html(cellValue));
+        rowElement.append($('<td/>').text(cellValue));
     }
     return rowElement;
 }
@@ -129,11 +129,5 @@ function createModalClickFunction(modal, form, object) {
         clearForm(form);
         form.values(object);
         modal.modal();
-    }
-}
-
-function createChooseClickFunction(button, object) {
-    return function() {
-        console.log('hello');
     }
 }

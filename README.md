@@ -32,9 +32,13 @@ Top level:
 | Parent    | card with fields       | -                     |
 
 ## Security
-The plusminus-admin is **not** responsible to secure admin's uri in your application. But to avoid accidental 
-security hole there is SecurityHoleDetector class which fails the application in case admin URI is not secured.
-[Needed to be implemented].
+The admin controller is annotated with `@Role("admin")` from plusminus-authorization: when the
+plusminus-security/plusminus-authorization stack is present in the application, only authenticated users
+with the `admin` role can open the page. The dependency is optional, so without that stack the annotation
+is **not** enforced. To avoid an accidental security hole there is SecurityHoleDetector class which fails
+the application on startup in case the admin page is enabled (`admin.controller` property) while
+plusminus-authorization is not active. If the admin page is protected by other means
+(e.g. a gateway or a servlet filter), set `admin.allow-unsecured=true` to skip the check.
 
 ## Upcomming to implement
 

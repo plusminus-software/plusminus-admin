@@ -6,7 +6,7 @@
         <b-button icon-left="refresh" size="is-small" @click="$refs.{{parameters.name}}Table.refresh()">Refresh</b-button>
     </p>
 </b-field>
-<type-table url="{{url}}" type-name="{{parameters.name}}" ref="{{parameters.name}}Table">
+<type-table url="{{contextPath}}{{url}}" type-name="{{parameters.name}}" ref="{{parameters.name}}Table">
 <template slot-scope="props">
     {{#columns}}
 {{>buefy/table-column}}

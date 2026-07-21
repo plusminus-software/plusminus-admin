@@ -3,7 +3,6 @@ package software.plusminus.admin;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -13,10 +12,10 @@ import org.supercsv.io.CsvListReader;
 import org.supercsv.prefs.CsvPreference;
 import software.plusminus.admin.controllers.TestController;
 import software.plusminus.admin.model.DataAction;
-import software.plusminus.selenium.Element;
-import software.plusminus.selenium.model.Visibility;
-import software.plusminus.selenium.model.WebTestOptions;
-import software.plusminus.test.SeleniumTest;
+import software.plusminus.browser.BrowserSettings;
+import software.plusminus.browser.Element;
+import software.plusminus.browser.Finder;
+import software.plusminus.test.BrowserTest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,9 +31,10 @@ import java.util.stream.StreamSupport;
 
 import static org.apache.commons.compress.utils.CharsetNames.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.fail;
 
-public class AdminPanelTest extends SeleniumTest {
+public class AdminPanelTest extends BrowserTest {
 
     private static final List<List<String>> CSV = readCsv("/type-table.csv");
     private static final List<String> HEADER_ROW = CSV.get(0);
@@ -55,64 +55,62 @@ public class AdminPanelTest extends SeleniumTest {
     }
 
     @Override
-    protected WebTestOptions options() {
-        return super.options()
-                .beforePageLoads(() -> testController.refreshData())
-                .reloadPageOnEachTest(true)
-                .logsFilter(logEntry -> !logEntry.getMessage().contains("favicon"));
+    protected BrowserSettings settings() {
+        return super.settings()
+                .beforePageLoads(() -> testController.refreshData());
     }
 
     @Test
     public void navPanel() {
-        List<Element> types = findAll("nav.tabs li", 2);
-        assertThat(types).extracting(Element::getText)
+        List<Element> types = find("nav.tabs li").includeHidden().many(2);
+        assertThat(types).extracting(Element::text)
                 .containsExactly("TestEntity", "ErrorEntity");
     }
 
     @Test
     public void typeTable() {
-        List<Element> columns = findAll("table thead th", HEADER_ROW.size(), Visibility.DISPLAYED);
-        assertThat(columns).extracting(Element::getText)
+        List<Element> columns = find("table thead th").many(HEADER_ROW.size());
+        assertThat(columns).extracting(Element::text)
                 .containsExactlyElementsOf(HEADER_ROW);
 
-        List<Element> rows = findAll("table tbody tr", 2, Visibility.DISPLAYED);
-        List<Element> cells1 = rows.get(0).find("td").all(EXISTING_ROW_1.size());
-        List<Element> cells2 = rows.get(1).find("td").all(EXISTING_ROW_2.size());
+        List<Element> rows = find("table tbody tr").many(2);
+        List<Element> cells1 = rows.get(0).find("td").includeHidden().many(EXISTING_ROW_1.size());
+        List<Element> cells2 = rows.get(1).find("td").includeHidden().many(EXISTING_ROW_2.size());
 
-        assertThat(cells1).extracting(Element::getText)
+        assertThat(cells1).extracting(Element::text)
                 .containsExactlyElementsOf(EXISTING_ROW_1);
-        assertThat(cells2).extracting(Element::getText)
+        assertThat(cells2).extracting(Element::text)
                 .containsExactlyElementsOf(EXISTING_ROW_2);
     }
 
     @Test
     public void addEntity() {
         clickTestEntityNav();
-        find().byText("button", "Add").displayed().one().click();
+        find("button", "Add").one().click();
         testModal(EMPTY_ROW, NEW_ROW, DataAction.CREATE);
         checkTable(Arrays.asList(EXISTING_ROW_1, EXISTING_ROW_2, NEW_ROW));
     }
 
     @Test
-    public void editEntity() throws IOException {
+    public void editEntity() {
         testRow(EXISTING_ROW_2, NEW_ROW, DataAction.UPDATE,
                 Arrays.asList(EXISTING_ROW_1, NEW_ROW));
     }
 
     @Test
-    public void editEntityWithoutChanges() throws IOException {
+    public void editEntityWithoutChanges() {
         testRow(EXISTING_ROW_2, null, DataAction.UPDATE,
                 Arrays.asList(EXISTING_ROW_1, EXISTING_ROW_2));
     }
 
     @Test
-    public void cloneEntity() throws IOException {
+    public void cloneEntity() {
         testRow(EXISTING_ROW_2, NEW_ROW, DataAction.CLONE,
                 Arrays.asList(EXISTING_ROW_1, EXISTING_ROW_2, NEW_ROW));
     }
 
     @Test
-    public void cloneEntityWithoutChanges() throws IOException {
+    public void cloneEntityWithoutChanges() {
         testRow(EXISTING_ROW_2, null, DataAction.CLONE,
                 Arrays.asList(EXISTING_ROW_1, EXISTING_ROW_2, EXISTING_ROW_2));
     }
@@ -124,14 +122,14 @@ public class AdminPanelTest extends SeleniumTest {
     }
 
     private void clickTestEntityNav() {
-        find().byText("a", "TestEntity").displayed().one().click();
+        find("a", "TestEntity").one().click();
     }
 
     private void testRow(List<String> currentValues, List<String> newValues,
                          DataAction action, List<List<String>> tableValuesAfterAction) {
         int index = CSV.indexOf(currentValues) - 1;
         clickTestEntityNav();
-        find().byText("button", action.toString()).displayed().all(2)
+        find("button", action.toString()).many(2)
                 .get(index).click();
         testModal(currentValues, newValues, action);
         checkTable(tableValuesAfterAction);
@@ -147,20 +145,20 @@ public class AdminPanelTest extends SeleniumTest {
         }
 
         setValuesInModal(newValues);
-        find(".modal").displayed().one()
-                .find().byText("button", action.toString()).displayed().one()
+        find(".modal").one()
+                .find("button", action.toString()).one()
                 .click();
-        find(".modal").none();
+        find(".modal").includeHidden().none();
     }
 
     private void checkTable(List<List<String>> tableValues) {
-        List<Element> rows = find("table tbody tr").displayed().all(tableValues.size());
+        List<Element> rows = find("table tbody tr").many(tableValues.size());
         for (int i = 0; i < tableValues.size(); i++) {
             List<String> rowValues = new ArrayList<>(tableValues.get(i));
             rowValues.set(0, Integer.toString(i)); // set correct id
             Element row = rows.get(i);
-            List<Element> cells = row.find("td").displayed().all(rowValues.size());
-            assertThat(cells).extracting(Element::getText).containsExactlyElementsOf(rowValues);
+            List<Element> cells = row.find("td").many(rowValues.size());
+            assertThat(cells).extracting(Element::text).containsExactlyElementsOf(rowValues);
         }
     }
 
@@ -171,9 +169,9 @@ public class AdminPanelTest extends SeleniumTest {
             columnHeaders.add(10, "EmbeddedString");
             unhide(findByLabel("Embedded", ".card"), "Create");
         }
-        find(".collapse a").displayed().max(1).forEach(Element::click); //TODO remove if unnecessary
-        List<Element> labels = find(".modal-card-body label").displayed().all(columnHeaders.size());
-        assertThat(labels).extracting(Element::getText)
+        find(".collapse a").max(1).forEach(Element::click);
+        List<Element> labels = find(".modal-card-body label").many(columnHeaders.size());
+        assertThat(labels).extracting(Element::text)
                 .containsExactlyElementsOf(columnHeaders);
     }
 
@@ -247,19 +245,19 @@ public class AdminPanelTest extends SeleniumTest {
         unhide(embeddeds, "Show embedded");
         setInput(embeddeds, "EmbeddedInt", "33");
         setInput(embeddeds, "EmbeddedString", "Embedded 33");
-        embeddeds.find().byText("button", "Add").one().click();
+        embeddeds.find("button", "Add").includeHidden().one().click();
         checkTags(embeddeds, jsonToStrings(NEW_ROW.get(9)));
 
         Element relation = findByLabel("Relation", ".card");
         clearTags(relation);
         unhide(relation, "Show table");
-        relation.find().byText("button", "Choose").all(2).get(0).click();
+        relation.find("button", "Choose").includeHidden().many(2).get(0).click();
         checkTags(relation, NEW_ROW.get(10));
 
         Element relations = findByLabel("Relations", ".card");
         clearTags(relations);
         unhide(relations, "Show table");
-        relations.find().byText("button", "Add").all(2)
+        relations.find("button", "Add").includeHidden().many(2)
                 .forEach(Element::click);
         checkTags(relations, jsonToStrings(NEW_ROW.get(11)));
 
@@ -268,17 +266,17 @@ public class AdminPanelTest extends SeleniumTest {
     }
 
     private void checkSpan(String label, String expectedValue) {
-        String actualValue = findByLabel(label, "span").getText();
+        String actualValue = findByLabel(label, "span").text();
         assertThat(actualValue.trim()).isEqualTo(expectedValue);
     }
 
     private void checkInput(String label, String expectedValue) {
-        String actualValue = findByLabel(label, "input").getValue();
+        String actualValue = findByLabel(label, "input").value();
         assertThat(actualValue).isEqualTo(expectedValue);
     }
 
     private void checkInput(Element container, String label, String expectedValue) {
-        String actualValue = container.findByLabel(label, "input").getValue();
+        String actualValue = findByLabel(container, label, "input").value();
         assertThat(actualValue).isEqualTo(expectedValue);
     }
 
@@ -288,44 +286,41 @@ public class AdminPanelTest extends SeleniumTest {
 
     private void checkInputTags(String label, String... values) {
         Element container = findByLabel(label, ".taginput");
-        List<Element> tags = container.find("span.tag").all(values.length);
-        assertThat(tags).extracting(Element::getText).containsExactly(values);
+        List<Element> tags = container.find("span.tag").includeHidden().many(values.length);
+        assertThat(tags).extracting(Element::text).containsExactly(values);
     }
 
     private void checkSelect(String label, String value) {
-        WebElement select = findByLabel(label, "select");
-        Select selectElement = new Select(select);
+        Select selectElement = select(label);
         if ("".equals(value)) {
             assertThat(selectElement.getAllSelectedOptions()).isEmpty();
             return;
         }
         assertThat(selectElement.getAllSelectedOptions())
-                .extracting(this::wrap)
-                .extracting(Element::getValue)
+                .extracting(option -> option.getAttribute("value"))
                 .containsExactly(value);
     }
 
     private void checkDropdown(String label, String value) {
         Element select = findByLabel(label, "button");
         if ("".equals(value)) {
-            assertThat(select.getText()).isEqualTo("Please select elements");
+            assertThat(select.text()).isEqualTo("Please select elements");
             return;
         }
-        assertThat(select.getText()).isEqualTo(value);
+        assertThat(select.text()).isEqualTo(value);
     }
 
     private void checkTags(Element container, String... values) {
         if (values.length == 1 && values[0].equals("")) {
             values = new String[0];
         }
-        List<Element> tags = container.find().bySelector("span.tag").all(values.length);
+        List<Element> tags = container.find("span.tag").includeHidden().many(values.length);
         for (int i = 0; i < tags.size(); i++) {
-            String tagText = tags.get(i).getText();
-            try {
-                assertThat(objectMapper.readTree(tagText)).isEqualTo(objectMapper.readTree(values[i]));
-            } catch (IOException e) {
-                fail("Failed due to IOException", e);
-            }
+            String tagText = tags.get(i).text();
+            String value = values[i];
+            assertThatCode(() -> {
+                assertThat(objectMapper.readTree(tagText)).isEqualTo(objectMapper.readTree(value));
+            }).doesNotThrowAnyException();
         }
     }
 
@@ -343,7 +338,7 @@ public class AdminPanelTest extends SeleniumTest {
     }
 
     private void setInput(Element container, String label, String value) {
-        Element input = container.findByLabel(label, "input");
+        Element input = findByLabel(container, label, "input");
         input.clear();
         input.clear();
         input.sendKeys(value);
@@ -351,40 +346,51 @@ public class AdminPanelTest extends SeleniumTest {
 
     private void setInputTags(String label, String... values) {
         Element container = findByLabel(label, ".taginput");
-        container.find(".tag").min(0).stream()
-                .map(tag -> tag.find(".delete").one())
+        container.find(".tag").includeHidden().min(0).stream()
+                .map(tag -> tag.find(".delete").includeHidden().one())
                 .forEach(Element::click);
-        Element input = container.find("input").one();
+        Element input = container.find("input").includeHidden().one();
         Stream.of(values).forEach(v -> input.sendKeys(v + Keys.ENTER));
     }
 
     private void setSelectOption(String label, String value) {
-        Element select = findByLabel(label, "select");
-        Select selectElement = new Select(select);
-        selectElement.selectByVisibleText(value);
+        select(label).selectByVisibleText(value);
     }
 
     private void setDropdownOptions(String label, String... values) {
         Element dropdown = findByLabel(label, ".dropdown");
-        Element dropdownButton = dropdown.find("button").one();
+        Element dropdownButton = dropdown.find("button").includeHidden().one();
         dropdownButton.click();
-        dropdown.find("a.is-active").min(0)
+        dropdown.find("a.is-active").includeHidden().min(0)
                 .forEach(Element::click);
         Stream.of(values)
-                .forEach(v -> dropdown.find().byText("a", v).one().click());
+                .forEach(v -> dropdown.find("a", v).includeHidden().one().click());
         dropdownButton.click();
     }
 
     private void clearTags(Element container) {
-        container.find(".tags").displayed().min(0)
-                .forEach(t -> t.find("a").one().click());
+        container.find(".tags").min(0)
+                .forEach(t -> t.find("a").includeHidden().one().click());
     }
 
     private void unhide(Element container, String hiderTextIfHided) {
-        container.find(By.tagName("a")).min(0).stream()
-                .filter(e -> hiderTextIfHided.equals(e.getText()))
+        container.find("a").includeHidden().min(0).stream()
+                .filter(e -> hiderTextIfHided.equals(e.text()))
                 .findFirst()
                 .ifPresent(Element::click);
+    }
+
+    private Element findByLabel(String label, String selector) {
+        return findByLabel(this, label, selector);
+    }
+
+    private Element findByLabel(Finder container, String label, String selector) {
+        return container.findWithLabel(label).bySelector(selector).includeHidden().one();
+    }
+
+    private Select select(String label) {
+        Element element = findByLabel(label, "select");
+        return new Select((WebElement) element);
     }
 
     private String[] jsonToStrings(String json) {
@@ -410,10 +416,10 @@ public class AdminPanelTest extends SeleniumTest {
 
     private static List<List<String>> readCsv(String filename) {
         List<List<String>> rows = new ArrayList<>();
-        try (InputStream inputStream = AdminPanelTest.class.getResourceAsStream(filename);
+        assertThatCode(() -> {InputStream inputStream = AdminPanelTest.class.getResourceAsStream(filename);
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, UTF_8);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                CsvListReader parser = new CsvListReader(bufferedReader, CsvPreference.EXCEL_PREFERENCE)) {
+                CsvListReader parser = new CsvListReader(bufferedReader, CsvPreference.EXCEL_PREFERENCE);
 
             List<String> row;
             while ((row = parser.read()) != null) {
@@ -422,9 +428,7 @@ public class AdminPanelTest extends SeleniumTest {
                         .collect(Collectors.toList());
                 rows.add(row);
             }
-        } catch (IOException e) {
-            fail("Failed due to IOException", e);
-        }
+        }).doesNotThrowAnyException();
         return rows;
     }
 }

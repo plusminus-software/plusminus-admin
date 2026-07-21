@@ -27,14 +27,14 @@
 </div>
 <div class="content has-text-centered">
     <b-button size="is-small" v-if="parent.files && parent.files.length"
-        @click="parent.uploadFiles(parent.files, '{{url}}'.replace('%s', parent.object.id ? parent.object.id : '')).then(response => { parent.files.length = 0; parent.replaceField(JSON.parse(response), '{{name}}') })">
+        @click="parent.uploadFiles(parent.files, '{{contextPath}}{{url}}'.replace('%s', parent.object.id ? parent.object.id : '')).then(response => { parent.files.length = 0; parent.replaceField(JSON.parse(response), '{{name}}') })">
             Upload
     </b-button>
 </div>
 <div>
     <div class="content has-text-centered">
         <p>or</p>
-        <b-button @click="parent.uploadFromClipboard('{{url}}'.replace('%s', parent.object.id)).then(response => { parent.files.length = 0; parent.object.{{name}} = JSON.parse(response).{{name}} })">
+        <b-button @click="parent.uploadFromClipboard('{{contextPath}}{{url}}'.replace('%s', parent.object.id)).then(response => { parent.files.length = 0; parent.object.{{name}} = JSON.parse(response).{{name}} })">
             Add from clipboard
         </b-button>
     </div>

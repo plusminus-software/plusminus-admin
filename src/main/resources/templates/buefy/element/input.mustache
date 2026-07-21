@@ -1,4 +1,5 @@
 <b-input
 {{#type}}    type="{{.}}"{{/type}}
+{{#readonly}}    readonly{{/readonly}}
 {{#name}}    v-model{{#isNumber}}.number{{/isNumber}}="parent.object.{{.}}"{{/name}}>
 </b-input>

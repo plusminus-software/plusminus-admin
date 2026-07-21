@@ -1,8 +1,10 @@
 package software.plusminus.admin.model.html;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class TableColumn extends Element {
 
     private static final String OPEN = "{{";

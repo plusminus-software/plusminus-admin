@@ -14,7 +14,8 @@ public class TimeConverter implements ElementConverter<TimeField, TimePicker> {
 
     @Override
     public TimePicker convert(TimeField field) {
-        TimePicker timePicker = new TimePicker(); // TODO implement
+        TimePicker timePicker = new TimePicker();
+        timePicker.setName(field.getName());
         return timePicker;
     }
 }
