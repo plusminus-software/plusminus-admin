@@ -36,10 +36,9 @@ The admin controller is annotated with `@Role("admin")` from plusminus-authoriza
 plusminus-security/plusminus-authorization stack is present in the application, only authenticated users
 with the `admin` role can open the page. The dependency is optional, so without that stack the annotation
 is **not** enforced. To avoid an accidental security hole there is SecurityHoleDetector class: on startup
-it probes the admin page over HTTP — once without authentication and once with a generated token of a user
-without the `admin` role. If either probe can fetch the page, the application fails to start.
-If the admin page is protected by other means the startup probe cannot see (e.g. a gateway),
-set `admin.allow-unsecured=true` to skip the check.
+it calls the uri AdminController is mapped to — once without a user and once with a generated token of
+a user without roles. If any response is successful (2xx), the page is exposed and the application
+fails to start; denials (4xx) and redirects away (3xx) are considered secure.
 
 ## Upcomming to implement
 
