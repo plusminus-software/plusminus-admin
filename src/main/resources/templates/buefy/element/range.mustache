@@ -1,0 +1,6 @@
+<b-input type="range"
+{{#min}}    min="{{.}}"{{/min}}
+{{#max}}    max="{{.}}"{{/max}}
+{{#readonly}}    disabled{{/readonly}}
+{{#name}}    v-model.number="parent.object.{{.}}"{{/name}}>
+</b-input>

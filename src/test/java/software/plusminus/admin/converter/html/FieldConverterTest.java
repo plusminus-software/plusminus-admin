@@ -11,7 +11,6 @@ import software.plusminus.admin.model.html.Span;
 import software.plusminus.admin.service.html.FieldNameService;
 import software.plusminus.admin.service.html.InputService;
 import software.plusminus.type.model.field.NumberField;
-import software.plusminus.type.model.field.RangeField;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,7 +47,7 @@ public class FieldConverterTest {
 
     @Test
     public void fieldWithoutConverterFallsBackToSpan() {
-        RangeField field = new RangeField();
+        UnsupportedField field = new UnsupportedField();
         field.setName("visibleAnyway");
         field.setAnnotations(Collections.emptyList());
 
@@ -64,5 +63,15 @@ public class FieldConverterTest {
         field.setName("id");
         field.setAnnotations(Collections.emptyList());
         return field;
+    }
+
+    /* Every shipped field type has a converter now; the fallback stays as a safety net
+       for field types introduced in the future */
+    private static class UnsupportedField extends software.plusminus.type.model.Field {
+
+        @Override
+        public software.plusminus.type.model.Validation getValidation() {
+            return null;
+        }
     }
 }

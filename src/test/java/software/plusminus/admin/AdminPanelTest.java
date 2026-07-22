@@ -2,6 +2,7 @@ package software.plusminus.admin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -49,9 +50,10 @@ public class AdminPanelTest extends BrowserTest {
     @Autowired
     private TestController testController;
 
-    @Override
-    protected String url() {
-        return "/admin";
+    @Before
+    public void openAdminPanel() {
+        login("TestUser", "admin");
+        go("/admin");
     }
 
     @Override
@@ -189,7 +191,7 @@ public class AdminPanelTest extends BrowserTest {
 
         Element embedded = findByLabel("Embedded", ".card");
         checkInput(embedded, "EmbeddedInt", values.get(8));
-        //checkInput(embedded, "EmbeddedString", "Embedded 20"); TODO
+        checkInput(embedded, "EmbeddedString", embeddedStringFor(values.get(8)));
 
         Element embeddeds = findByLabel("Embeddeds", ".card");
         checkTags(embeddeds, jsonToStrings(values.get(9)));
@@ -213,7 +215,7 @@ public class AdminPanelTest extends BrowserTest {
         checkSpan("Strings", values.get(5));
         checkSpan("TestEnum", values.get(6));
         checkSpan("Enums", values.get(7));
-        //checkSpan("Embedded", values.get(8)); TODO fix
+        checkEmbeddedSpan(values.get(8));
         checkSpan("Embeddeds", values.get(9));
         checkSpan("Relation", values.get(10));
         checkSpan("Relations", values.get(11));
@@ -270,6 +272,22 @@ public class AdminPanelTest extends BrowserTest {
         assertThat(actualValue.trim()).isEqualTo(expectedValue);
     }
 
+    /* The single embedded object is rendered by the span as JSON,
+       but the CSV holds only its title field (embeddedInt) -
+       compare the parsed JSON against the fixture pattern instead */
+    private void checkEmbeddedSpan(String embeddedInt) {
+        String actualValue = findByLabel("Embedded", "span").text();
+        assertThatCode(() -> {
+            JsonNode node = objectMapper.readTree(actualValue);
+            assertThat(node.get("embeddedInt").asText()).isEqualTo(embeddedInt);
+            assertThat(node.get("embeddedString").asText()).isEqualTo(embeddedStringFor(embeddedInt));
+        }).doesNotThrowAnyException();
+    }
+
+    private String embeddedStringFor(String embeddedInt) {
+        return "".equals(embeddedInt) ? "" : "Embedded " + embeddedInt;
+    }
+
     private void checkInput(String label, String expectedValue) {
         String actualValue = findByLabel(label, "input").value();
         assertThat(actualValue).isEqualTo(expectedValue);
@@ -280,8 +298,9 @@ public class AdminPanelTest extends BrowserTest {
         assertThat(actualValue).isEqualTo(expectedValue);
     }
 
-    private void checkCheckbox(String label, String expectedValue) { //NOPMD
-        // TODO implement
+    private void checkCheckbox(String label, String expectedValue) {
+        WebElement checkbox = (WebElement) findByLabel(label, "input");
+        assertThat(checkbox.isSelected()).isEqualTo(Boolean.parseBoolean(expectedValue));
     }
 
     private void checkInputTags(String label, String... values) {
@@ -324,10 +343,11 @@ public class AdminPanelTest extends BrowserTest {
         }
     }
 
-    private void setCheckbox(String label, boolean value) { //NOPMD
-        // TODO implement
-        Element checkbox = findByLabel(label, "label");
-        checkbox.click();
+    private void setCheckbox(String label, boolean value) {
+        WebElement input = (WebElement) findByLabel(label, "input");
+        if (input.isSelected() != value) {
+            findByLabel(label, "label").click();
+        }
     }
 
     private void setInput(String label, String value) {
@@ -416,17 +436,19 @@ public class AdminPanelTest extends BrowserTest {
 
     private static List<List<String>> readCsv(String filename) {
         List<List<String>> rows = new ArrayList<>();
-        assertThatCode(() -> {InputStream inputStream = AdminPanelTest.class.getResourceAsStream(filename);
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, UTF_8);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                CsvListReader parser = new CsvListReader(bufferedReader, CsvPreference.EXCEL_PREFERENCE);
+        assertThatCode(() -> {
+            try (InputStream inputStream = AdminPanelTest.class.getResourceAsStream(filename);
+                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream, UTF_8);
+                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                    CsvListReader parser = new CsvListReader(bufferedReader, CsvPreference.EXCEL_PREFERENCE)) {
 
-            List<String> row;
-            while ((row = parser.read()) != null) {
-                row = row.stream()
-                        .map(cell -> cell == null ? "" : cell)
-                        .collect(Collectors.toList());
-                rows.add(row);
+                List<String> row;
+                while ((row = parser.read()) != null) {
+                    row = row.stream()
+                            .map(cell -> cell == null ? "" : cell)
+                            .collect(Collectors.toList());
+                    rows.add(row);
+                }
             }
         }).doesNotThrowAnyException();
         return rows;

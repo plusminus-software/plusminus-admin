@@ -131,3 +131,14 @@ function createModalClickFunction(modal, form, object) {
         modal.modal();
     }
 }
+
+function createChooseClickFunction(button, object) {
+    return function() {
+        let formGroup = $(button).closest('.form-group');
+        let tags = formGroup.find('[tags]');
+        if (tags.attr('single')) {
+            tags.tagsinput('removeAll');
+        }
+        tags.tagsinput('add', object);
+    }
+}

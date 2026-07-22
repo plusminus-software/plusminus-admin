@@ -1,0 +1,8 @@
+{{#name}}
+<figure class="image">
+    <img v-if="parent.object.{{.}}" :src="parent.object.{{.}}" alt="{{.}}">
+</figure>
+<div v-if="!parent.object.{{.}}">
+    No image
+</div>
+{{/name}}

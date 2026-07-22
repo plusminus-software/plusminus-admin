@@ -1,0 +1,7 @@
+{{#name}}
+<video controls v-if="parent.object.{{.}}" :src="parent.object.{{.}}" style="max-width: 100%;">
+</video>
+<div v-if="!parent.object.{{.}}">
+    No video
+</div>
+{{/name}}

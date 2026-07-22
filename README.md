@@ -35,10 +35,11 @@ Top level:
 The admin controller is annotated with `@Role("admin")` from plusminus-authorization: when the
 plusminus-security/plusminus-authorization stack is present in the application, only authenticated users
 with the `admin` role can open the page. The dependency is optional, so without that stack the annotation
-is **not** enforced. To avoid an accidental security hole there is SecurityHoleDetector class which fails
-the application on startup in case the admin page is enabled (`admin.controller` property) while
-plusminus-authorization is not active. If the admin page is protected by other means
-(e.g. a gateway or a servlet filter), set `admin.allow-unsecured=true` to skip the check.
+is **not** enforced. To avoid an accidental security hole there is SecurityHoleDetector class: on startup
+it probes the admin page over HTTP — once without authentication and once with a generated token of a user
+without the `admin` role. If either probe can fetch the page, the application fails to start.
+If the admin page is protected by other means the startup probe cannot see (e.g. a gateway),
+set `admin.allow-unsecured=true` to skip the check.
 
 ## Upcomming to implement
 

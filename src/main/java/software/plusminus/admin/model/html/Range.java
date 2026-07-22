@@ -5,5 +5,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Range extends Element {
+public class Range extends AbstractInput {
+
+    private Integer min;
+    private Integer max;
+
 }
