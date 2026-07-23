@@ -1,6 +1,7 @@
 package software.plusminus.admin.converter.html.field;
 
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import software.plusminus.admin.converter.html.FormConverter;
@@ -11,11 +12,15 @@ import software.plusminus.admin.model.html.TaglistEmbedded;
 import software.plusminus.type.model.field.ArrayField;
 import software.plusminus.type.model.field.EmbeddedField;
 
-@AllArgsConstructor
 @Component
 public class ArrayEmbeddedConverter implements ArrayElementConverter<EmbeddedField, TaglistEmbedded> {
 
     private FormConverter formConverter;
+
+    @Autowired
+    void init(@Lazy FormConverter formConverter) {
+        this.formConverter = formConverter;
+    }
 
     @Override
     public Class<EmbeddedField> arrayType() {
