@@ -7,8 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class TaglistRelation extends AbstractInput {
 
-    private static final boolean TAGLIST_RELATION = true;
-
     private Taglist taglist;
     private Table table;
 

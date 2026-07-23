@@ -6,6 +6,4 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Taginput extends AbstractInput {
-
-    private String type;
 }

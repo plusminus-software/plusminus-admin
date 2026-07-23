@@ -1,6 +1,6 @@
 package software.plusminus.admin.converter.html;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -8,6 +8,7 @@ import software.plusminus.admin.converter.AdminPanelConverter;
 import software.plusminus.admin.model.html.Table;
 import software.plusminus.admin.model.html.TableColumn;
 import software.plusminus.admin.model.settings.AdminTypeConfig;
+import software.plusminus.admin.service.AdminTypeRegistry;
 import software.plusminus.admin.service.ApiService;
 import software.plusminus.type.model.Field;
 import software.plusminus.type.model.TitleField;
@@ -16,21 +17,18 @@ import software.plusminus.util.FieldUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class TableConverter {
 
-    @Autowired
     private ApiService apiService;
-    @Autowired
-    private Map<String, AdminTypeConfig> types;
+    private AdminTypeRegistry typeRegistry;
 
     public Table convertToTable(Type type) {
         Table table = new Table();
-        table.setId("table-" + type.getName());
         table.setUrl(apiService.getUrl(type));
         table.setColumns(getColumns(type));
         return table;
@@ -56,7 +54,7 @@ public class TableConverter {
 
     @Nullable
     private List<String> getFields(Type type) {
-        AdminTypeConfig config = types.get(type.getName());
+        AdminTypeConfig config = typeRegistry.find(type.getName());
         if (config == null) {
             return Collections.emptyList();
         }

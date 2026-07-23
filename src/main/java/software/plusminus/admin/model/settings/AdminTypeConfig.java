@@ -11,6 +11,7 @@ public class AdminTypeConfig {
     private Type type;
     private TableSettings tableSettings;
     private ModalSettings modalSettings;
+    private int order;
 
     private static AdminTypeConfigBuilder builder() {
         return new AdminTypeConfigBuilder();
@@ -20,5 +21,10 @@ public class AdminTypeConfig {
         return builder().type(type)
                 .tableSettings(TableSettings.builder().build())
                 .modalSettings(ModalSettings.builder().build());
+    }
+
+    /* Declared explicitly so that javadoc, which runs without Lombok,
+       can resolve the builder methods above; Lombok fills in the members */
+    public static class AdminTypeConfigBuilder {
     }
 }

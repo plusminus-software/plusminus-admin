@@ -12,6 +12,7 @@ import software.plusminus.admin.model.DataAction;
 import software.plusminus.admin.model.html.Tab;
 import software.plusminus.admin.model.html.Tabs;
 import software.plusminus.admin.model.settings.AdminTypeConfig;
+import software.plusminus.admin.service.AdminTypeRegistry;
 import software.plusminus.type.model.Field;
 import software.plusminus.type.model.Type;
 
@@ -22,17 +23,23 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Builds the admin panel model out of the {@link AdminTypeRegistry} content.
+ * The registry list defines the order of the tabs on the admin page: it is sorted
+ * by {@code @Admin(order)} / the {@link AdminTypeConfig} order ascending,
+ * ties are broken by the type name. An empty registry renders an empty admin panel.
+ */
 @AllArgsConstructor
 @Component
 public class AdminPanelConverter {
 
     private TableConverter tableConverter;
     private ModalConverter modalConverter;
-    private Map<String, AdminTypeConfig> typeConfigs;
+    private AdminTypeRegistry typeRegistry;
 
     public AdminPanel toAdminPanel() {
         AdminPanel adminPanel = new AdminPanel();
-        adminPanel.setTabs(toTabs(typeConfigs.values().stream()
+        adminPanel.setTabs(toTabs(typeRegistry.configs().stream()
                 .map(AdminTypeConfig::getType)
                 .collect(Collectors.toList())));
         return adminPanel;

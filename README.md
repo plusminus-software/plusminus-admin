@@ -5,6 +5,48 @@ Simple out-of-the-box admin page implementation.
 
 Generates CRUD admin panel for provided classes.
 
+### Configuring admin types
+
+Annotate a class with `@Admin` to make it appear in the admin panel:
+
+```java
+@Admin
+public class Article {
+    ...
+}
+```
+
+The annotated classes are discovered on startup by classpath scanning. The discovery scope is
+the auto-configuration packages (the package of the `@SpringBootApplication` class and everything
+below it) plus any packages declared with `@EntityScan`. The annotation has two attributes:
+
+* `api` — custom API URI of the type. When empty (the default), the URI is derived from the type
+  name: `${api.prefix:/api}/` followed by the pluralized kebab-case type name
+  (e.g. `Article` -> `/api/articles`).
+* `order` — order of the type's tab on the admin panel: lower values come first, ties are broken
+  by the type name.
+
+For types that cannot be annotated (e.g. classes coming from a third-party jar) or to override
+the generated settings of a discovered type, define an `AdminTypesContributor` bean:
+
+```java
+@Bean
+public AdminTypesContributor adminTypes(ParseService parseService) {
+    Type type = parseService.parse(ExternalEntity.class);
+    return () -> Collections.singletonList(AdminTypeConfig.builder(type)
+            .tableSettings(TableSettings.builder()
+                    .fields(Arrays.asList("id", "name"))
+                    .build())
+            .build());
+}
+```
+
+The contributed configs are merged with the discovered ones by type name, and a contributed
+config **replaces** a discovered one with the same type name, so a contributor is also the way
+to customize the table/modal settings or the order of an `@Admin` annotated type.
+With no annotated classes and no contributors the application still boots and renders
+an empty admin panel.
+
 ### Supported operations:
 
 1) Create
@@ -38,7 +80,10 @@ with the `admin` role can open the page. The dependency is optional, so without 
 is **not** enforced. To avoid an accidental security hole there is SecurityHoleDetector class: on startup
 it calls the uri AdminController is mapped to — once without a user and once with a generated token of
 a user without roles. If any response is successful (2xx), the page is exposed and the application
-fails to start; denials (4xx) and redirects away (3xx) are considered secure.
+fails to start; denials (4xx) and redirects away (3xx) are considered secure. When no TokenProcessor
+bean is available the role probe is skipped and a warning is logged, because the role-escalation
+scenario cannot be verified. If the probe requests cannot be performed at all (e.g. the
+server address is not connectable), a warning is logged and the application starts normally.
 
 ## Upcomming to implement
 
@@ -59,4 +104,3 @@ fails to start; denials (4xx) and redirects away (3xx) are considered secure.
 ** Make Relation polymorphic (f. e. if type is Animal on UI it is possible to select Animal, Dog and Cat)
 ** Make pagination able to handle a big count of pages
 ** Boolean array type
-** SecurityHoleDetector

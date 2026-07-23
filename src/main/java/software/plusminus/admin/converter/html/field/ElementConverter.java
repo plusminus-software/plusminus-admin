@@ -1,5 +1,7 @@
 package software.plusminus.admin.converter.html.field;
 
+import org.springframework.lang.Nullable;
+import software.plusminus.admin.model.DataAction;
 import software.plusminus.admin.model.html.Element;
 import software.plusminus.type.model.Field;
 
@@ -12,5 +14,9 @@ public interface ElementConverter<F extends Field, T extends Element> {
     }
 
     T convert(F field);
+
+    default T convert(F field, @Nullable DataAction action) {
+        return convert(field);
+    }
 
 }

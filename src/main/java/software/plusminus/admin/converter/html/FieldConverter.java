@@ -50,7 +50,7 @@ public class FieldConverter {
                 .filter(c -> c.fieldType() == field.getClass())
                 .filter(c -> supports(field, c))
                 .findFirst()
-                .<Element>map(c -> convert(field, c))
+                .<Element>map(c -> convert(field, action, c))
                 .orElseGet(() -> toSpan(field));
         if (element instanceof AbstractInput) {
             ((AbstractInput) element).setReadonly(inputService.isReadonly(field, action));
@@ -76,9 +76,10 @@ public class FieldConverter {
 
     private <F extends software.plusminus.type.model.Field, T extends Element> T convert(
             software.plusminus.type.model.Field field,
+            DataAction action,
             ElementConverter<F, T> converter) {
         F castedField = converter.fieldType().cast(field);
-        return converter.convert(castedField);
+        return converter.convert(castedField, action);
     }
 
     private <F extends software.plusminus.type.model.Field> boolean supports(

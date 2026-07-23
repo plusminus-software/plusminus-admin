@@ -7,8 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class TaglistEmbedded extends AbstractInput {
 
-    private static final boolean TAGLIST_EMBEDDED = true;
-
     private Taglist taglist;
     private Accordion accordion;
 

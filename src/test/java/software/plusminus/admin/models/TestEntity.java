@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import software.plusminus.admin.annotation.Admin;
 import software.plusminus.type.model.TitleField;
 
 import java.util.List;
 
+@Admin(order = 1)
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor

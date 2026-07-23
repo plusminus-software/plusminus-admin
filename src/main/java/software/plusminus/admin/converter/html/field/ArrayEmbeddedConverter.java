@@ -1,18 +1,20 @@
 package software.plusminus.admin.converter.html.field;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import software.plusminus.admin.converter.html.FormConverter;
+import software.plusminus.admin.model.DataAction;
 import software.plusminus.admin.model.html.Accordion;
 import software.plusminus.admin.model.html.Taglist;
 import software.plusminus.admin.model.html.TaglistEmbedded;
 import software.plusminus.type.model.field.ArrayField;
 import software.plusminus.type.model.field.EmbeddedField;
 
+@AllArgsConstructor
 @Component
 public class ArrayEmbeddedConverter implements ArrayElementConverter<EmbeddedField, TaglistEmbedded> {
 
-    @Autowired
     private FormConverter formConverter;
 
     @Override
@@ -22,6 +24,12 @@ public class ArrayEmbeddedConverter implements ArrayElementConverter<EmbeddedFie
 
     @Override
     public TaglistEmbedded convertArray(ArrayField arrayField, EmbeddedField typeField) {
+        return convertArray(arrayField, typeField, null);
+    }
+
+    @Override
+    public TaglistEmbedded convertArray(ArrayField arrayField, EmbeddedField typeField,
+                                        @Nullable DataAction action) {
         TaglistEmbedded taglistEmbedded = new TaglistEmbedded();
         taglistEmbedded.setName(arrayField.getName());
 
@@ -30,7 +38,7 @@ public class ArrayEmbeddedConverter implements ArrayElementConverter<EmbeddedFie
         taglistEmbedded.setTaglist(taglist);
 
         Accordion accordion = new Accordion();
-        accordion.setElements(formConverter.toElements(typeField.getType(), null)); // TODO null
+        accordion.setElements(formConverter.toElements(typeField.getType(), action));
         taglistEmbedded.setAccordion(accordion);
 
         return taglistEmbedded;

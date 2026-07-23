@@ -13,28 +13,24 @@ import software.plusminus.type.model.field.TextField;
 import software.plusminus.type.model.field.TimeField;
 import software.plusminus.type.model.field.UuidField;
 
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class ArrayConverter implements ElementConverter<ArrayField, Taginput> {
 
-    private static final Map<Class<?>, String> TYPES = createTypesMap();
-
-    private static Map<Class<?>, String> createTypesMap() {
-        Map<Class<?>, String> map = new HashMap<>();
-        map.put(NumberField.class, "number");
-        map.put(TextField.class, "text");
-        map.put(BooleanField.class, "text");
-        map.put(ColorField.class, "text");
-        map.put(DateField.class, "date");
-        map.put(DatetimeField.class, "text");
-        map.put(DatetimeLocalField.class, "datetime-local");
-        map.put(TimeField.class, "time");
-        map.put(UuidField.class, "text");
-        return Collections.unmodifiableMap(map);
-    }
+    private static final Set<Class<?>> SUPPORTED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            NumberField.class,
+            TextField.class,
+            BooleanField.class,
+            ColorField.class,
+            DateField.class,
+            DatetimeField.class,
+            DatetimeLocalField.class,
+            TimeField.class,
+            UuidField.class)));
 
     @Override
     public Class<ArrayField> fieldType() {
@@ -43,18 +39,13 @@ public class ArrayConverter implements ElementConverter<ArrayField, Taginput> {
 
     @Override
     public boolean supports(ArrayField field) {
-        return TYPES.containsKey(field.getArrayType().getClass());
+        return SUPPORTED_TYPES.contains(field.getArrayType().getClass());
     }
 
     @Override
     public Taginput convert(ArrayField field) {
         Taginput taginput = new Taginput();
         taginput.setName(field.getName());
-        taginput.setType(getType(field));
         return taginput;
-    }
-
-    private String getType(ArrayField field) {
-        return TYPES.get(field.getArrayType().getClass());
     }
 }

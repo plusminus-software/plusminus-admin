@@ -1,9 +1,8 @@
+<div>
 {{#upload}}
     <div class="card has-text-centered">
     {{>buefy/element/upload}}
     </div>
-    </b-field>
-    <b-field>
 {{/upload}}
 
 <b-carousel-list :data="{{#single}}[{{/single}}parent.object.{{name}}{{#single}}]{{/single}}" :items-to-show="3">
@@ -44,3 +43,4 @@
         </div>
     </template>
 </b-carousel-list>
+</div>

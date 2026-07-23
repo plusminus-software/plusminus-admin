@@ -11,8 +11,6 @@ import software.plusminus.type.model.Type;
 @EqualsAndHashCode(callSuper = true)
 public class AdminType extends Element {
 
-    private static final boolean ADMIN_TYPE = true;
-
     private Type parameters;
     private Table table;
     private Modal createModal;

@@ -44,7 +44,20 @@ function createModalComponent(name) {
                     this.refreshTable();
                     this.isLoading = false;
                 }, error => {
-                    console.log("Error on AJAX request");
+                    console.log("Error on AJAX request", error);
+                    let message = 'Failed to ' + this.action.toLowerCase() + ' ' + this.typeName;
+                    if (error && error.status) {
+                        message += ': ' + error.status
+                            + (error.statusText ? ' ' + error.statusText : '');
+                    }
+                    if (error && error.bodyText) {
+                        message += ' - ' + error.bodyText.substring(0, 200);
+                    }
+                    this.$buefy.toast.open({
+                        message: message,
+                        type: 'is-danger',
+                        duration: 5000
+                    });
                     this.isLoading = false;
                 });
             },
@@ -92,7 +105,6 @@ function createModalComponent(name) {
                 return new Promise(function (resolve, reject) {
 
                     const xhr = new XMLHttpRequest();
-                    self = this; // TODO change this global variable
                     xhr.onload = function () {
                       if (this.status >= 200 && this.status < 300) {
                         resolve(xhr.response);

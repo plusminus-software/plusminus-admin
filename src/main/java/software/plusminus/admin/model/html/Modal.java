@@ -7,7 +7,6 @@ import software.plusminus.admin.model.UiColor;
 @Data
 public class Modal {
 
-    private String type;
     private String title;
     private DataAction action;
     private String url;
