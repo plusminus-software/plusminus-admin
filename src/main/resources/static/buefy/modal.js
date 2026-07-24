@@ -93,7 +93,7 @@ function createModalComponent(name) {
             },
             uploadFiles(files, url) {
                 if (!files) {
-                    Promise.resolve();
+                    return Promise.resolve();
                 }
                 const formData = new FormData();
                 files.forEach(file => {

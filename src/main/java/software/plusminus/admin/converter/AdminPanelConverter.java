@@ -1,6 +1,7 @@
 package software.plusminus.admin.converter;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
  * by {@code @Admin(order)} / the {@link AdminTypeConfig} order ascending,
  * ties are broken by the type name. An empty registry renders an empty admin panel.
  */
+@Slf4j
 @AllArgsConstructor
 @Component
 public class AdminPanelConverter {
@@ -83,7 +85,14 @@ public class AdminPanelConverter {
                         (existing, shadowed) -> existing));
 
         return fields.stream()
-                .map(fieldMap::get)
+                .map(fieldName -> {
+                    Field field = fieldMap.get(fieldName);
+                    if (field == null) {
+                        log.warn("Admin config for type '{}' references field '{}' which does not exist "
+                                + "on the type; it is ignored", type.getName(), fieldName);
+                    }
+                    return field;
+                })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
